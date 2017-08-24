@@ -3,7 +3,11 @@ package ru.customtextview
 import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
+import android.util.Log
 import android.widget.TextView
+
+
+
 
 
 class VerticalTextView(context: Context, attrs: AttributeSet) : TextView(context, attrs) {
@@ -16,7 +20,6 @@ class VerticalTextView(context: Context, attrs: AttributeSet) : TextView(context
     var orientation = Orientation.HORIZONTAL
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-
         if(orientation==Orientation.VERTICAL) {
             super.onMeasure(heightMeasureSpec, widthMeasureSpec)
             setMeasuredDimension(measuredHeight, measuredWidth)
@@ -26,14 +29,20 @@ class VerticalTextView(context: Context, attrs: AttributeSet) : TextView(context
         }
     }
 
-    override fun onDraw(canvas: Canvas) {
-        canvas.save()
+    override fun setFrame(left: Int, top: Int, right: Int, bottom: Int): Boolean {
         if(orientation==Orientation.VERTICAL) {
-            canvas.translate(0F, height.toFloat())
-            canvas.rotate(-90F)
+            super.setFrame(left, top, left + (bottom - top), top + (right - left))
         }
-        layout.draw(canvas)
+        else super.setFrame(left, top, right, bottom)
+        return true
+    }
 
-        canvas.restore()
+    override fun draw(canvas: Canvas) {
+        if(orientation==Orientation.VERTICAL) {
+            canvas.translate(0f, width.toFloat())
+            canvas.rotate(-90f)
+        }
+
+        super.draw(canvas)
     }
 }
